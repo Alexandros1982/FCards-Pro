@@ -281,8 +281,8 @@ html{
 .rpct{font-size:8px;font-weight:900;color:var(--gold);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
 
 /* ── SCREENS ── */
-.scr{display:none;padding:12px}
-.scr.on{display:block}
+.scr{display:none;flex-direction:column;height:100%;overflow:hidden}
+.scr.on{display:flex}
 
 /* ── STATS BAR (grid screen top) ── */
 .stats-bar{
@@ -1314,7 +1314,7 @@ html{
   </div>
 
   <!-- ΡΥΘΜΙΣΕΙΣ -->
-  <div class="scr" id="scr-settings">
+  <div class="scr" id="scr-settings" style="overflow-y:auto">
     <div class="set-sec">
       <div class="set-sec-ttl">⭐ PRO Λειτουργίες</div>
       <div class="set-card">
@@ -1484,7 +1484,7 @@ html{
     <button class="ab-back" onclick="showScr('grid')">‹</button>
     <div class="ab-title">📊 Στατιστικά</div>
   </div>
-  <div class="main" id="pro-stats-content"></div>
+  <div class="main" id="pro-stats-content" style="overflow-y:auto;padding:12px"></div>
 </div>
 
 <!-- PRO: COMPARE SCREEN -->
@@ -1493,11 +1493,14 @@ html{
     <button class="ab-back" onclick="showScr('grid')">‹</button>
     <div class="ab-title">🤝 Σύγκριση με φίλο</div>
   </div>
-  <div class="main">
+  <div class="main" style="overflow-y:auto">
     <div class="compare-input-wrap">
       <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Επικόλλησε τη λίστα του φίλου σου (από Κοινοποίηση):</div>
       <textarea class="compare-paste" id="comparePasteInput" placeholder="Επικόλλησε εδώ..."></textarea>
-      <button class="donate-btn" style="margin-top:8px" onclick="doCompare()">🔍 Σύγκριση</button>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="donate-btn" style="flex:1" onclick="doCompare()">🔍 Σύγκριση</button>
+        <button class="donate-btn" style="flex:0 0 auto;width:auto;padding:11px 14px;border-color:rgba(230,57,70,.35);color:#e63946;background:rgba(230,57,70,.08)" onclick="clearCompare()">🗑</button>
+      </div>
     </div>
     <div id="compare-results"></div>
   </div>
@@ -1509,7 +1512,7 @@ html{
     <button class="ab-back" onclick="showScr('grid')">‹</button>
     <div class="ab-title">🕐 Ιστορικό</div>
   </div>
-  <div class="main" id="pro-history-content"></div>
+  <div class="main" id="pro-history-content" style="overflow-y:auto"></div>
 </div>
 
 <!-- TOOLBAR STRIP -->
@@ -2236,7 +2239,7 @@ function renderGrid(){
           cell.style.padding='3px 2px';
           cell.innerHTML=
             '<span style="font-size:'+numSize+';font-weight:900;line-height:1;white-space:nowrap;text-align:center;display:block;width:100%">'+numStr+'</span>'+
-            '<span style="font-size:5px;opacity:.85;line-height:1.15;text-align:center;display:block;width:100%;white-space:normal;word-break:break-word">'+esc(pname)+'</span>';
+            '<span style="font-size:6.5px;opacity:.85;line-height:1.15;text-align:center;display:block;width:100%;white-space:normal;word-break:break-word">'+esc(pname)+'</span>';
         } else {
           cell.textContent=cardNum;
         }
@@ -2295,7 +2298,7 @@ function cellSingleClick(i){
       updateWishBadge();
       addHistory(i+1,'added');
       saveState();
-    },220);
+    },400);
   }
 }
 function cellDoubleClick(i){
@@ -3127,11 +3130,11 @@ function renderProStats(){
 
   // Group stats
   var groups={};
-  if(state.useGroups && state.groupNames){
-    var gs=state.groupSize||10;
+  if(state.useGroups && state.groupSize){
+    var gs=state.groupSize;
     for(var i=0;i<total;i++){
       var gi=Math.floor(i/gs);
-      var gn=state.groupNames[gi]||('Ομάδα '+(gi+1));
+      var gn=(state.groupNames&&state.groupNames[gi])?state.groupNames[gi]:('Ομάδα '+(gi+1));
       if(!groups[gn]) groups[gn]={total:0,collected:0};
       groups[gn].total++;
       if(cells[i]) groups[gn].collected++;
@@ -3181,6 +3184,11 @@ function goProCompare(){
   if(!state){ toast(lang==='el'?'⚠️ Άνοιξε πρώτα μια συλλογή':'⚠️ Open a collection first'); return; }
   showScr('pro-compare');
 }
+function clearCompare(){
+  document.getElementById('comparePasteInput').value='';
+  document.getElementById('compare-results').innerHTML='';
+}
+
 function doCompare(){
   var txt=document.getElementById('comparePasteInput').value.trim();
   if(!txt){ toast(lang==='el'?'⚠️ Επικόλλησε πρώτα τη λίστα':'⚠️ Paste the list first'); return; }
