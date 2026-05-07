@@ -281,8 +281,8 @@ html{
 .rpct{font-size:8px;font-weight:900;color:var(--gold);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
 
 /* ── SCREENS ── */
-.scr{display:none;flex-direction:column;height:100%;overflow:hidden}
-.scr.on{display:flex}
+.scr{display:none;padding:12px}
+.scr.on{display:block}
 
 /* ── STATS BAR (grid screen top) ── */
 .stats-bar{
@@ -2630,12 +2630,6 @@ document.addEventListener('fullscreenchange',function(){
   var btn=document.getElementById('abFsBtn');
   if(ico) ico.textContent = fsOn ? '⊡' : '⛶';
   if(btn) btn.classList.toggle('on', fsOn);
-  // Auto re-enter fullscreen if exited
-  if(!fsOn){
-    var el=document.documentElement;
-    if(el.requestFullscreen) el.requestFullscreen().catch(function(){});
-    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-  }
 });
 
 function setLang(l){
