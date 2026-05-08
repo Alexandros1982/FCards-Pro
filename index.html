@@ -2303,21 +2303,32 @@ function switchTab(tab){
 function doSearch(val){
   var clr=document.getElementById('searchClear');
   clr.style.display=val?'block':'none';
-  var n=parseInt(val);
   var allCells=document.querySelectorAll('#groupsContainer .cell');
   var allGroups=document.querySelectorAll('#groupsContainer .grp-block');
-  if(!val||isNaN(n)){
+  if(!val){
     allCells.forEach(function(c){ c.classList.remove('hidden'); });
     allGroups.forEach(function(g){ g.classList.remove('empty-grp'); });
     document.getElementById('searchNone') && document.getElementById('searchNone').remove();
     return;
   }
+  var q=val.trim().toUpperCase();
   var found=false;
   allCells.forEach(function(c){
-    var num=parseInt(c.textContent);
-    var match=(num===n);
+    // Get ONLY the first span (card number), not the player name span
+    var spans=c.querySelectorAll('span');
+    var numText='';
+    if(spans.length>0){
+      numText=spans[0].textContent.trim().toUpperCase();
+    } else {
+      // No spans — plain text cell
+      numText=c.textContent.trim().toUpperCase();
+    }
+    var match=(numText===q);
     c.classList.toggle('hidden',!match);
-    if(match){ found=true; setTimeout(function(){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.add('hl'); setTimeout(function(){ c.classList.remove('hl'); },2000); },100); }
+    if(match && !found){
+      found=true;
+      setTimeout(function(){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.add('hl'); setTimeout(function(){ c.classList.remove('hl'); },2000); },100);
+    }
   });
   allGroups.forEach(function(g){
     var vis=g.querySelectorAll('.cell:not(.hidden)').length>0;
@@ -2325,7 +2336,7 @@ function doSearch(val){
   });
   var sn=document.getElementById('searchNone');
   if(!found){
-    if(!sn){ var d=document.createElement('div'); d.id='searchNone'; d.className='search-none'; d.textContent='Δεν βρέθηκε κελί #'+n; document.getElementById('groupsContainer').appendChild(d); }
+    if(!sn){ var d=document.createElement('div'); d.id='searchNone'; d.className='search-none'; d.textContent=(lang==='el'?'Δεν βρέθηκε κελί: ':'Cell not found: ')+val; document.getElementById('groupsContainer').appendChild(d); }
   } else { sn && sn.remove(); }
 }
 
