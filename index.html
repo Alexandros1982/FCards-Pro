@@ -1307,11 +1307,9 @@ html{
     </div>
     <div class="set-sec">
       <div class="set-sec-ttl" id="lbl-set-support">Υποστήριξη</div>
-      <div style="display:flex;gap:8px">
-        <button class="donate-btn" style="flex:1" onclick="doDonate()">💛 <span id="lbl-donate-btn">Δωρεά μέσω Iris</span></button>
-        <button class="donate-btn" style="flex:1" onclick="doPaypal()">💙 <span id="lbl-donate-paypal">Δωρεά μέσω PayPal</span></button>
+      <div style="text-align:center;padding:14px 8px">
+        <div style="font-size:18px;font-weight:900;color:var(--gold);text-shadow:0 0 12px rgba(245,197,24,.4)" id="lbl-pro-owner">⭐ Κάτοχος PRO έκδοσης</div>
       </div>
-      <div class="donate-sub" id="lbl-donate-sub">Κάθε δωρεά βοηθά στην ανάπτυξη</div>
     </div>
     <div class="set-sec">
       <div class="set-sec-ttl" id="lbl-set-contact">Επικοινωνία</div>
@@ -1540,7 +1538,7 @@ var TR = {
     set_display:'Εμφάνιση', fs_lbl:'Πλήρης οθόνη', fs_sub:'Απόκρυψη browser chrome',
     lang_lbl:'Γλώσσα', lang_sub:'Επιλογή γλώσσας εφαρμογής',
     set_support:'Υποστήριξη', donate_btn:'Δωρεά μέσω Iris', donate_paypal:'Δωρεά μέσω PayPal', donate_sub:'Κάθε δωρεά βοηθά στην ανάπτυξη',
-    pro_section:'⭐ PRO Λειτουργίες', pro_stats:'Στατιστικά συλλογής', pro_compare:'Σύγκριση με φίλο', pro_history:'Ιστορικό καρτών', pro_theme:'Θέμα εφαρμογής', pro_export:'Εξαγωγή σε αρχείο κειμένου',
+    pro_section:'⭐ PRO Λειτουργίες', pro_stats:'Στατιστικά συλλογής', pro_compare:'Σύγκριση με φίλο', pro_history:'Ιστορικό καρτών', pro_theme:'Θέμα εφαρμογής', pro_export:'Εξαγωγή σε αρχείο κειμένου', pro_owner:'⭐ Κάτοχος PRO έκδοσης',
     set_about:'Σχετικά', creator:'Δημιουργός: Αλέξανδρος Θεοχάρης',
     about_links:'Χρήσιμοι σύνδεσμοι',
     set_contact:'Επικοινωνία', contact_title:'Παρατηρήσεις & Διορθώσεις', contact_btn:'Email',
@@ -1584,7 +1582,7 @@ var TR = {
     set_display:'Display', fs_lbl:'Full screen', fs_sub:'Hide browser chrome',
     lang_lbl:'Language', lang_sub:'App language selection',
     set_support:'Support', donate_btn:'Donate via Iris', donate_paypal:'Donate via PayPal', donate_sub:'Every donation helps development',
-    pro_section:'⭐ PRO Features', pro_stats:'Collection Statistics', pro_compare:'Compare with Friend', pro_history:'Card History', pro_theme:'App Theme', pro_export:'Export to Text File',
+    pro_section:'⭐ PRO Features', pro_stats:'Collection Statistics', pro_compare:'Compare with Friend', pro_history:'Card History', pro_theme:'App Theme', pro_export:'Export to Text File', pro_owner:'⭐ PRO Version Owner',
     set_about:'About', creator:'Created by: Alexandros Theocharis',
     about_links:'Useful links',
     set_contact:'Contact', contact_title:'Feedback & Bug Reports', contact_btn:'Email',
@@ -2630,6 +2628,7 @@ function applyLang(){
   var e4=document.getElementById('lbl-pro-history'); if(e4) e4.textContent=T('pro_history');
   var e5=document.getElementById('lbl-pro-theme'); if(e5) e5.textContent=T('pro_theme');
   var e6=document.getElementById('lbl-pro-export'); if(e6) e6.textContent=T('pro_export');
+  var e7=document.getElementById('lbl-pro-owner'); if(e7) e7.textContent=T('pro_owner');
   document.getElementById('lbl-set-about').textContent=T('set_about');
   document.getElementById('lbl-creator').textContent=T('creator');
   var abl=document.getElementById('lbl-about-links');
