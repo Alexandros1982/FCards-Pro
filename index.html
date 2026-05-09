@@ -161,7 +161,7 @@ html{
 }
 
 /* ── MAIN SCROLL ── */
-.main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;display:flex;flex-direction:column}
 .main::-webkit-scrollbar{display:none}
 
 /* ── TOOLBAR STRIP ── */
@@ -239,9 +239,9 @@ html{
 
 /* ── SCREENS ── */
 .scr{display:none;padding:12px}
-.scr.on{display:block}
-#scr-grid.on{display:flex!important;flex-direction:column;height:100%;overflow:hidden;padding:0}
-#scr-pro-stats.on,#scr-pro-compare.on,#scr-pro-history.on{display:flex!important;flex-direction:column;height:100%}
+.scr.on{display:block;flex:1}
+#scr-grid.on{display:flex!important;flex-direction:column;flex:1;overflow:hidden;padding:0}
+#scr-pro-stats.on,#scr-pro-compare.on,#scr-pro-history.on{display:flex!important;flex-direction:column;flex:1}
 
 /* ── STATS BAR (grid screen top) ── */
 .stats-bar{
