@@ -139,6 +139,18 @@ html{
 .ab-btn.on{background:rgba(245,197,24,.18);border-color:rgba(245,197,24,.5)}
 .ab-btn-power{font-size:15px}
 .ab-btn-power:active{background:rgba(245,197,24,.2)}
+.ab-back{
+  width:44px;height:44px;border-radius:12px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(245,197,24,.2);
+  color:var(--gold);font-size:26px;font-weight:800;
+  font-family:var(--font);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
+  line-height:1;
+}
+.ab-back:active{background:rgba(245,197,24,.2);transform:scale(.9)}
 .prog-chip{
   background:rgba(245,197,24,.12);
   border:1px solid rgba(245,197,24,.4);
@@ -229,6 +241,7 @@ html{
 .scr{display:none;padding:12px}
 .scr.on{display:block}
 #scr-grid.on{display:flex!important}
+#scr-pro-stats.on,#scr-pro-compare.on,#scr-pro-history.on{display:flex!important;flex-direction:column;height:100%}
 
 /* ── STATS BAR (grid screen top) ── */
 .stats-bar{
@@ -1410,15 +1423,15 @@ html{
 </div>
 
 <!-- PRO: STATISTICS SCREEN -->
-<div class="scr" id="scr-pro-stats">
+<div class="scr" id="scr-pro-stats" style="height:100%;display:none;flex-direction:column">
   <div class="ab"><button class="ab-back" onclick="showScr('grid')">‹</button><div class="ab-title">📊 Στατιστικά</div></div>
-  <div class="main" id="pro-stats-content" style="overflow-y:auto;padding:12px"></div>
+  <div id="pro-stats-content" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px"></div>
 </div>
 
 <!-- PRO: COMPARE SCREEN -->
 <div class="scr" id="scr-pro-compare">
   <div class="ab"><button class="ab-back" onclick="showScr('grid')">‹</button><div class="ab-title">🤝 Σύγκριση με φίλο</div></div>
-  <div class="main" style="overflow-y:auto">
+  <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
     <div style="padding:12px;display:flex;flex-direction:column;gap:8px">
       <div style="font-size:12px;color:var(--text2)">📋 Κάρτες που <b>έχει</b> ο φίλος (από Κοινοποίηση):</div>
       <textarea class="compare-paste" id="comparePasteInput" placeholder="Επικόλλησε εδώ τις κάρτες που έχει..."></textarea>
@@ -1436,7 +1449,7 @@ html{
 <!-- PRO: HISTORY SCREEN -->
 <div class="scr" id="scr-pro-history">
   <div class="ab"><button class="ab-back" onclick="showScr('grid')">‹</button><div class="ab-title">🕐 Ιστορικό</div></div>
-  <div class="main" id="pro-history-content" style="overflow-y:auto;-webkit-overflow-scrolling:touch"></div>
+  <div id="pro-history-content" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>
 </div>
 
 <!-- TOOLBAR STRIP -->
