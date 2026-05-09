@@ -139,18 +139,6 @@ html{
 .ab-btn.on{background:rgba(245,197,24,.18);border-color:rgba(245,197,24,.5)}
 .ab-btn-power{font-size:15px}
 .ab-btn-power:active{background:rgba(245,197,24,.2)}
-.ab-back{
-  width:44px;height:44px;border-radius:12px;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(245,197,24,.2);
-  color:var(--gold);font-size:26px;font-weight:800;
-  font-family:var(--font);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-  -webkit-tap-highlight-color:transparent;
-  line-height:1;
-}
-.ab-back:active{background:rgba(245,197,24,.2);transform:scale(.9)}
 .prog-chip{
   background:rgba(245,197,24,.12);
   border:1px solid rgba(245,197,24,.4);
@@ -240,8 +228,6 @@ html{
 /* ── SCREENS ── */
 .scr{display:none;padding:12px}
 .scr.on{display:block}
-#scr-grid.on{display:flex!important}
-#scr-pro-stats.on,#scr-pro-compare.on,#scr-pro-history.on{display:flex!important;flex-direction:column;height:100%}
 
 /* ── STATS BAR (grid screen top) ── */
 .stats-bar{
@@ -413,7 +399,7 @@ html{
   padding:1px 4px;margin-left:2px;min-width:14px;text-align:center;
   vertical-align:middle;
 }
-.tcont{display:none;flex:1;overflow-y:auto;padding:0 12px 12px}
+.tcont{display:none}
 .tcont.on{display:block}
 
 /* ── GRID ── */
@@ -1195,8 +1181,8 @@ html{
   </div>
 
   <!-- GRID -->
-  <div class="scr" id="scr-grid" style="display:none;flex-direction:column;padding:0;overflow:hidden">
-    <div class="stats-bar" id="statsBar" style="flex-shrink:0;padding:8px 12px 0">
+  <div class="scr" id="scr-grid">
+    <div class="stats-bar" id="statsBar">
       <div class="stat-card">
         <div class="stat-lbl" id="lbl-stat-total">Σύνολο</div>
         <div class="stat-val" id="statTotal">0</div>
@@ -1230,7 +1216,7 @@ html{
       <div class="search-bar">
         <div class="search-wrap">
           <span class="search-ico">🔍</span>
-          <input class="search-inp" type="text" id="searchInput" placeholder="Αναζήτηση κελιού..." oninput="doSearch(this.value)">
+          <input class="search-inp" type="number" id="searchInput" placeholder="Αναζήτηση κελιού..." min="1" oninput="doSearch(this.value)">
           <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
         </div>
       </div>
@@ -1275,22 +1261,22 @@ html{
   <!-- ΡΥΘΜΙΣΕΙΣ -->
   <div class="scr" id="scr-settings" style="overflow-y:auto">
     <div class="set-sec">
-      <div class="set-sec-ttl" id="lbl-pro-section">⭐ PRO Λειτουργίες</div>
+      <div class="set-sec-ttl">⭐ PRO Λειτουργίες</div>
       <div class="set-card">
         <div class="set-row" onclick="goProStats()" style="cursor:pointer">
-          <div class="set-left"><div class="set-ico" style="background:rgba(245,197,24,.15)">📊</div><div><div class="set-lbl" id="lbl-pro-stats">Στατιστικά συλλογής</div></div></div>
+          <div class="set-left"><div class="set-ico" style="background:rgba(245,197,24,.15)">📊</div><div><div class="set-lbl">Στατιστικά συλλογής</div></div></div>
           <div style="color:var(--gold);font-size:14px">▸</div>
         </div>
         <div class="set-row" onclick="goProCompare()" style="cursor:pointer;border-top:1px solid rgba(255,255,255,.05)">
-          <div class="set-left"><div class="set-ico" style="background:rgba(245,197,24,.15)">🤝</div><div><div class="set-lbl" id="lbl-pro-compare">Σύγκριση με φίλο</div></div></div>
+          <div class="set-left"><div class="set-ico" style="background:rgba(245,197,24,.15)">🤝</div><div><div class="set-lbl">Σύγκριση με φίλο</div></div></div>
           <div style="color:var(--gold);font-size:14px">▸</div>
         </div>
         <div class="set-row" onclick="goProHistory()" style="cursor:pointer;border-top:1px solid rgba(255,255,255,.05)">
-          <div class="set-left"><div class="set-ico" style="background:rgba(245,197,24,.15)">🕐</div><div><div class="set-lbl" id="lbl-pro-history">Ιστορικό καρτών</div></div></div>
+          <div class="set-left"><div class="set-ico" style="background:rgba(245,197,24,.15)">🕐</div><div><div class="set-lbl">Ιστορικό καρτών</div></div></div>
           <div style="color:var(--gold);font-size:14px">▸</div>
         </div>
         <div class="set-row" style="border-top:1px solid rgba(255,255,255,.05)">
-          <div class="set-left"><div class="set-ico" style="background:rgba(245,197,24,.15)">🎨</div><div><div class="set-lbl" id="lbl-pro-theme">Θέμα εφαρμογής</div></div></div>
+          <div class="set-left"><div class="set-ico" style="background:rgba(245,197,24,.15)">🎨</div><div><div class="set-lbl">Θέμα εφαρμογής</div></div></div>
           <div class="theme-grid" style="grid-template-columns:repeat(5,28px);gap:6px">
             <div class="theme-dot t-dark" id="th-dark" onclick="setTheme('dark')" title="Σκούρο"></div>
             <div class="theme-dot t-light" id="th-light" onclick="setTheme('light')" title="Φωτεινό"></div>
@@ -1300,7 +1286,7 @@ html{
           </div>
         </div>
         <div class="set-row" onclick="exportPDF()" style="cursor:pointer;border-top:1px solid rgba(255,255,255,.05)">
-          <div class="set-left"><div class="set-ico" style="background:rgba(230,57,70,.15)">📄</div><div><div class="set-lbl" id="lbl-pro-export">Εξαγωγή σε αρχείο κειμένου</div></div></div>
+          <div class="set-left"><div class="set-ico" style="background:rgba(230,57,70,.15)">📄</div><div><div class="set-lbl">Εξαγωγή σε αρχείο κειμένου</div></div></div>
           <div style="color:var(--red);font-size:14px">▸</div>
         </div>
       </div>
@@ -1308,7 +1294,7 @@ html{
     <div class="set-sec">
       <div class="set-sec-ttl" id="lbl-set-support">Υποστήριξη</div>
       <div style="text-align:center;padding:14px 8px">
-        <div style="font-size:18px;font-weight:900;color:var(--gold);text-shadow:0 0 12px rgba(245,197,24,.4)" id="lbl-pro-owner">⭐ Κάτοχος PRO έκδοσης</div>
+        <div id="lbl-pro-owner" style="font-size:18px;font-weight:900;color:var(--gold);text-shadow:0 0 12px rgba(245,197,24,.4)">⭐ Κάτοχος PRO έκδοσης</div>
       </div>
     </div>
     <div class="set-sec">
@@ -1421,20 +1407,18 @@ html{
 </div>
 
 <!-- PRO: STATISTICS SCREEN -->
-<div class="scr" id="scr-pro-stats" style="height:100%;display:none;flex-direction:column">
+<div class="scr" id="scr-pro-stats">
   <div class="ab"><button class="ab-back" onclick="showScr('grid')">‹</button><div class="ab-title">📊 Στατιστικά</div></div>
-  <div id="pro-stats-content" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px"></div>
+  <div class="main" id="pro-stats-content" style="overflow-y:auto;padding:12px"></div>
 </div>
 
 <!-- PRO: COMPARE SCREEN -->
 <div class="scr" id="scr-pro-compare">
   <div class="ab"><button class="ab-back" onclick="showScr('grid')">‹</button><div class="ab-title">🤝 Σύγκριση με φίλο</div></div>
-  <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
+  <div class="main" style="overflow-y:auto">
     <div style="padding:12px;display:flex;flex-direction:column;gap:8px">
-      <div style="font-size:12px;color:var(--text2)">📋 Κάρτες που <b>έχει</b> ο φίλος (από Κοινοποίηση):</div>
-      <textarea class="compare-paste" id="comparePasteInput" placeholder="Επικόλλησε εδώ τις κάρτες που έχει..."></textarea>
-      <div style="font-size:12px;color:var(--text2);margin-top:4px">🔍 Κάρτες που <b>αναζητά</b> ο φίλος (Wishlist):</div>
-      <textarea class="compare-paste" id="comparePasteWishInput" placeholder="Επικόλλησε εδώ τις κάρτες που ψάχνει..."></textarea>
+      <div style="font-size:12px;color:var(--text2)">Επικόλλησε τη λίστα του φίλου σου (από Κοινοποίηση):</div>
+      <textarea class="compare-paste" id="comparePasteInput" placeholder="Επικόλλησε εδώ..."></textarea>
       <div style="display:flex;gap:8px">
         <button class="donate-btn" style="flex:1" onclick="doCompare()">🔍 Σύγκριση</button>
         <button class="donate-btn" style="flex:0 0 auto;width:auto;padding:11px 14px;border-color:rgba(230,57,70,.35);color:#e63946;background:rgba(230,57,70,.08)" onclick="clearCompare()">🗑</button>
@@ -1447,7 +1431,7 @@ html{
 <!-- PRO: HISTORY SCREEN -->
 <div class="scr" id="scr-pro-history">
   <div class="ab"><button class="ab-back" onclick="showScr('grid')">‹</button><div class="ab-title">🕐 Ιστορικό</div></div>
-  <div id="pro-history-content" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>
+  <div class="main" id="pro-history-content" style="overflow-y:auto"></div>
 </div>
 
 <!-- TOOLBAR STRIP -->
@@ -1537,8 +1521,7 @@ var TR = {
     rename_ttl:'✏️ Μετονομασία ομάδας', rename_ph:'Νέο όνομα...', btn_cancel:'Ακύρωση', btn_save:'Αποθήκευση',
     set_display:'Εμφάνιση', fs_lbl:'Πλήρης οθόνη', fs_sub:'Απόκρυψη browser chrome',
     lang_lbl:'Γλώσσα', lang_sub:'Επιλογή γλώσσας εφαρμογής',
-    set_support:'Υποστήριξη', donate_btn:'Δωρεά μέσω Iris', donate_paypal:'Δωρεά μέσω PayPal', donate_sub:'Κάθε δωρεά βοηθά στην ανάπτυξη',
-    pro_section:'⭐ PRO Λειτουργίες', pro_stats:'Στατιστικά συλλογής', pro_compare:'Σύγκριση με φίλο', pro_history:'Ιστορικό καρτών', pro_theme:'Θέμα εφαρμογής', pro_export:'Εξαγωγή σε αρχείο κειμένου', pro_owner:'⭐ Κάτοχος PRO έκδοσης',
+    set_support:'Υποστήριξη', donate_btn:'Δωρεά μέσω Iris', donate_paypal:'Δωρεά μέσω PayPal', donate_sub:'Κάθε δωρεά βοηθά στην ανάπτυξη', pro_owner:'⭐ Κάτοχος PRO έκδοσης',
     set_about:'Σχετικά', creator:'Δημιουργός: Αλέξανδρος Θεοχάρης',
     about_links:'Χρήσιμοι σύνδεσμοι',
     set_contact:'Επικοινωνία', contact_title:'Παρατηρήσεις & Διορθώσεις', contact_btn:'Email',
@@ -1581,8 +1564,7 @@ var TR = {
     rename_ttl:'✏️ Rename group', rename_ph:'New name...', btn_cancel:'Cancel', btn_save:'Save',
     set_display:'Display', fs_lbl:'Full screen', fs_sub:'Hide browser chrome',
     lang_lbl:'Language', lang_sub:'App language selection',
-    set_support:'Support', donate_btn:'Donate via Iris', donate_paypal:'Donate via PayPal', donate_sub:'Every donation helps development',
-    pro_section:'⭐ PRO Features', pro_stats:'Collection Statistics', pro_compare:'Compare with Friend', pro_history:'Card History', pro_theme:'App Theme', pro_export:'Export to Text File', pro_owner:'⭐ PRO Version Owner',
+    set_support:'Support', donate_btn:'Donate via Iris', donate_paypal:'Donate via PayPal', donate_sub:'Every donation helps development', pro_owner:'⭐ PRO Version Owner',
     set_about:'About', creator:'Created by: Alexandros Theocharis',
     about_links:'Useful links',
     set_contact:'Contact', contact_title:'Feedback & Bug Reports', contact_btn:'Email',
@@ -2316,32 +2298,21 @@ function switchTab(tab){
 function doSearch(val){
   var clr=document.getElementById('searchClear');
   clr.style.display=val?'block':'none';
+  var n=parseInt(val);
   var allCells=document.querySelectorAll('#groupsContainer .cell');
   var allGroups=document.querySelectorAll('#groupsContainer .grp-block');
-  if(!val){
+  if(!val||isNaN(n)){
     allCells.forEach(function(c){ c.classList.remove('hidden'); });
     allGroups.forEach(function(g){ g.classList.remove('empty-grp'); });
     document.getElementById('searchNone') && document.getElementById('searchNone').remove();
     return;
   }
-  var q=val.trim().toUpperCase();
   var found=false;
   allCells.forEach(function(c){
-    // Get ONLY the first span (card number), not the player name span
-    var spans=c.querySelectorAll('span');
-    var numText='';
-    if(spans.length>0){
-      numText=spans[0].textContent.trim().toUpperCase();
-    } else {
-      // No spans — plain text cell
-      numText=c.textContent.trim().toUpperCase();
-    }
-    var match=(numText===q);
+    var num=parseInt(c.textContent);
+    var match=(num===n);
     c.classList.toggle('hidden',!match);
-    if(match && !found){
-      found=true;
-      setTimeout(function(){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.add('hl'); setTimeout(function(){ c.classList.remove('hl'); },2000); },100);
-    }
+    if(match){ found=true; setTimeout(function(){ c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.add('hl'); setTimeout(function(){ c.classList.remove('hl'); },2000); },100); }
   });
   allGroups.forEach(function(g){
     var vis=g.querySelectorAll('.cell:not(.hidden)').length>0;
@@ -2349,7 +2320,7 @@ function doSearch(val){
   });
   var sn=document.getElementById('searchNone');
   if(!found){
-    if(!sn){ var d=document.createElement('div'); d.id='searchNone'; d.className='search-none'; d.textContent=(lang==='el'?'Δεν βρέθηκε κελί: ':'Cell not found: ')+val; document.getElementById('groupsContainer').appendChild(d); }
+    if(!sn){ var d=document.createElement('div'); d.id='searchNone'; d.className='search-none'; d.textContent='Δεν βρέθηκε κελί #'+n; document.getElementById('groupsContainer').appendChild(d); }
   } else { sn && sn.remove(); }
 }
 
@@ -2619,16 +2590,7 @@ function applyLang(){
   var _lfs=document.getElementById('lbl-fullscreen'); if(_lfs) _lfs.textContent=T('fs_lbl');
   var _lfe=document.getElementById('lbl-lang'); if(_lfe) _lfe.textContent=T('lang_lbl');
   document.getElementById('lbl-set-support').textContent=T('set_support');
-  document.getElementById('lbl-donate-btn').textContent=T('donate_btn');
-  document.getElementById('lbl-donate-paypal').textContent=T('donate_paypal');
-  document.getElementById('lbl-donate-sub').textContent=T('donate_sub');
-  var e1=document.getElementById('lbl-pro-section'); if(e1) e1.textContent=T('pro_section');
-  var e2=document.getElementById('lbl-pro-stats'); if(e2) e2.textContent=T('pro_stats');
-  var e3=document.getElementById('lbl-pro-compare'); if(e3) e3.textContent=T('pro_compare');
-  var e4=document.getElementById('lbl-pro-history'); if(e4) e4.textContent=T('pro_history');
-  var e5=document.getElementById('lbl-pro-theme'); if(e5) e5.textContent=T('pro_theme');
-  var e6=document.getElementById('lbl-pro-export'); if(e6) e6.textContent=T('pro_export');
-  var e7=document.getElementById('lbl-pro-owner'); if(e7) e7.textContent=T('pro_owner');
+  var _po=document.getElementById('lbl-pro-owner'); if(_po) _po.textContent=T('pro_owner');
   document.getElementById('lbl-set-about').textContent=T('set_about');
   document.getElementById('lbl-creator').textContent=T('creator');
   var abl=document.getElementById('lbl-about-links');
@@ -2853,17 +2815,6 @@ applyLang();
 renderCollList();
 updateRing();
 updateAbLangBtn();
-// First launch message
-try{
-  if(!localStorage.getItem('fcards_welcomed')){
-    setTimeout(function(){
-      alert(lang==='el'
-        ?'👋 Καλώς ήρθες στο FCards PRO!\n\nΓια οδηγίες χρήσης πήγαινε στις\n⚙️ Ρυθμίσεις → Βοήθεια\n\nΑπόλαυσε την εφαρμογή! ⚽'
-        :'👋 Welcome to FCards PRO!\n\nFor instructions go to\n⚙️ Settings → Help\n\nEnjoy the app! ⚽');
-      localStorage.setItem('fcards_welcomed','1');
-    },2000);
-  }
-}catch(e){}
 // Sync FS icon on init
 (function(){
   var ico=document.getElementById('abFsIco');
@@ -3087,22 +3038,7 @@ function renderProStats(){
   var missing=total-collected;
   var pct=total>0?Math.round(collected/total*100):0;
   var groups={};
-  if(state.xlsxGroups && state.xlsxGroups.length>0){
-    // Excel-imported collection - use real group names
-    var offset=0;
-    state.xlsxGroups.forEach(function(grp,g){
-      var gn=(state.groupNames&&state.groupNames[g])?state.groupNames[g]:grp.name;
-      if(!groups[gn]) groups[gn]={total:0,collected:0};
-      for(var k=0;k<grp.size;k++){
-        var idx=offset+k;
-        if(idx<total){
-          groups[gn].total++;
-          if(cells[idx]) groups[gn].collected++;
-        }
-      }
-      offset+=grp.size;
-    });
-  } else if(state.useGroups && state.groupSize){
+  if(state.useGroups && state.groupSize){
     var gs=state.groupSize;
     for(var i=0;i<total;i++){
       var gi=Math.floor(i/gs);
@@ -3146,47 +3082,25 @@ function goProCompare(){
 }
 function clearCompare(){
   document.getElementById('comparePasteInput').value='';
-  document.getElementById('comparePasteWishInput').value='';
   document.getElementById('compare-results').innerHTML='';
 }
 function doCompare(){
   var txt=document.getElementById('comparePasteInput').value.trim();
-  var wishTxt=document.getElementById('comparePasteWishInput').value.trim();
-
-  if(!txt && !wishTxt){
-    toast(lang==='el'?'⚠️ Επικόλλησε τουλάχιστον ένα πεδίο':'⚠️ Paste at least one field');
-    return;
-  }
-
+  if(!txt){ toast(lang==='el'?'⚠️ Επικόλλησε πρώτα τη λίστα':'⚠️ Paste the list first'); return; }
+  var friendNums={};
+  var matches=txt.match(/\d+/g)||[];
+  matches.forEach(function(n){ friendNums[parseInt(n)]=true; });
   var cells=state.cells||[];
+  var friendHasINeed=[], iHaveFriendNeeds=[];
+  for(var i=0;i<state.total;i++){
+    if(!cells[i] && friendNums[i+1]) friendHasINeed.push(i+1);
+    if(cells[i] && !friendNums[i+1]) iHaveFriendNeeds.push(i+1);
+  }
   var html='<div style="padding:12px;display:flex;flex-direction:column;gap:12px">';
-
-  // Field 1: What friend HAS that I need
-  if(txt){
-    var friendHas={};
-    (txt.match(/[A-Za-z0-9]+/g)||[]).forEach(function(id){ friendHas[id.toUpperCase()]=true; });
-    var friendHasINeed=[];
-    for(var i=0;i<state.total;i++){
-      var cardId=state.cardIndex?String(state.cardIndex[i]):String(i+1);
-      if(!cells[i] && (friendHas[cardId.toUpperCase()]||friendHas[String(i+1)])) friendHasINeed.push(cardId);
-    }
-    html+='<div class="stats-card"><div class="stats-title" style="color:var(--green2)">✅ '+(lang==='el'?'Ο φίλος έχει που μου λείπουν':'Friend has what I need')+' ('+friendHasINeed.length+')</div>';
-    html+=(friendHasINeed.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+friendHasINeed.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
-  }
-
-  // Field 2: What friend WANTS that I have
-  if(wishTxt){
-    var friendWants={};
-    (wishTxt.match(/[A-Za-z0-9]+/g)||[]).forEach(function(id){ friendWants[id.toUpperCase()]=true; });
-    var iHaveFriendNeeds=[];
-    for(var i=0;i<state.total;i++){
-      var cardId=state.cardIndex?String(state.cardIndex[i]):String(i+1);
-      if(cells[i] && (friendWants[cardId.toUpperCase()]||friendWants[String(i+1)])) iHaveFriendNeeds.push(cardId);
-    }
-    html+='<div class="stats-card"><div class="stats-title" style="color:var(--gold)">🎁 '+(lang==='el'?'Έχω που χρειάζεται ο φίλος':'I have what friend needs')+' ('+iHaveFriendNeeds.length+')</div>';
-    html+=(iHaveFriendNeeds.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+iHaveFriendNeeds.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
-  }
-
+  html+='<div class="stats-card"><div class="stats-title" style="color:var(--green2)">✅ '+(lang==='el'?'Ο φίλος έχει που μου λείπουν':'Friend has what I need')+' ('+friendHasINeed.length+')</div>';
+  html+=(friendHasINeed.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+friendHasINeed.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
+  html+='<div class="stats-card"><div class="stats-title" style="color:var(--gold)">🎁 '+(lang==='el'?'Έχω που χρειάζεται ο φίλος':'I have what friend needs')+' ('+iHaveFriendNeeds.length+')</div>';
+  html+=(iHaveFriendNeeds.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+iHaveFriendNeeds.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
   html+='</div>';
   document.getElementById('compare-results').innerHTML=html;
 }
