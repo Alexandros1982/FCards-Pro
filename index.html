@@ -240,7 +240,7 @@ html{
 /* ── SCREENS ── */
 .scr{display:none;padding:12px}
 .scr.on{display:block}
-#scr-grid.on{display:flex!important;flex-direction:column;height:100%;overflow:hidden}
+#scr-grid.on{display:flex!important;flex-direction:column;height:100%;overflow:hidden;padding:0}
 #scr-pro-stats.on,#scr-pro-compare.on,#scr-pro-history.on{display:flex!important;flex-direction:column;height:100%}
 
 /* ── STATS BAR (grid screen top) ── */
@@ -1231,7 +1231,7 @@ html{
       <div class="search-bar">
         <div class="search-wrap">
           <span class="search-ico">🔍</span>
-          <input class="search-inp" type="number" id="searchInput" placeholder="Αναζήτηση κελιού..." min="1" oninput="doSearch(this.value)">
+          <input class="search-inp" type="text" id="searchInput" placeholder="Αναζήτηση κελιού..." oninput="doSearch(this.value)">
           <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
         </div>
       </div>
@@ -2175,7 +2175,7 @@ function renderGrid(){
           cell.style.padding='3px 2px';
           cell.innerHTML=
             '<span style="font-size:'+numSize+';font-weight:900;line-height:1;white-space:nowrap;text-align:center;display:block;width:100%">'+numStr+'</span>'+
-            '<span style="font-size:6.5px;opacity:.85;line-height:1.15;text-align:center;display:block;width:100%;white-space:normal;word-break:break-word">'+esc(pname)+'</span>';
+            '<span style="font-size:7.5px;opacity:.9;line-height:1.2;text-align:center;display:block;width:100%;white-space:normal;word-break:break-word">'+esc(pname)+'</span>';
         } else {
           cell.textContent=cardNum;
         }
@@ -3114,21 +3114,40 @@ function clearCompare(){
 }
 function doCompare(){
   var txt=document.getElementById('comparePasteInput').value.trim();
-  if(!txt){ toast(lang==='el'?'⚠️ Επικόλλησε πρώτα τη λίστα':'⚠️ Paste the list first'); return; }
-  var friendNums={};
-  var matches=txt.match(/\d+/g)||[];
-  matches.forEach(function(n){ friendNums[parseInt(n)]=true; });
+  var wishTxt=document.getElementById('comparePasteWishInput').value.trim();
+  if(!txt && !wishTxt){ toast(lang==='el'?'⚠️ Επικόλλησε τουλάχιστον ένα πεδίο':'⚠️ Paste at least one field'); return; }
+
   var cells=state.cells||[];
-  var friendHasINeed=[], iHaveFriendNeeds=[];
-  for(var i=0;i<state.total;i++){
-    if(!cells[i] && friendNums[i+1]) friendHasINeed.push(i+1);
-    if(cells[i] && !friendNums[i+1]) iHaveFriendNeeds.push(i+1);
-  }
   var html='<div style="padding:12px;display:flex;flex-direction:column;gap:12px">';
-  html+='<div class="stats-card"><div class="stats-title" style="color:var(--green2)">✅ '+(lang==='el'?'Ο φίλος έχει που μου λείπουν':'Friend has what I need')+' ('+friendHasINeed.length+')</div>';
-  html+=(friendHasINeed.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+friendHasINeed.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
-  html+='<div class="stats-card"><div class="stats-title" style="color:var(--gold)">🎁 '+(lang==='el'?'Έχω που χρειάζεται ο φίλος':'I have what friend needs')+' ('+iHaveFriendNeeds.length+')</div>';
-  html+=(iHaveFriendNeeds.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+iHaveFriendNeeds.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
+
+  // Field 1: Cards friend HAS that I need (only show cards from friend's list that I'm missing)
+  if(txt){
+    var friendHas={};
+    (txt.match(/[A-Za-z0-9]+/g)||[]).forEach(function(id){ friendHas[id.toUpperCase()]=true; });
+    var friendHasINeed=[];
+    for(var i=0;i<state.total;i++){
+      var cardId=state.cardIndex?String(state.cardIndex[i]):String(i+1);
+      var inFriend=friendHas[cardId.toUpperCase()]||friendHas[String(i+1)];
+      if(!cells[i] && inFriend) friendHasINeed.push(cardId);
+    }
+    html+='<div class="stats-card"><div class="stats-title" style="color:var(--green2)">✅ '+(lang==='el'?'Ο φίλος έχει που μου λείπουν':'Friend has what I need')+' ('+friendHasINeed.length+')</div>';
+    html+=(friendHasINeed.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+friendHasINeed.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
+  }
+
+  // Field 2: Cards friend WANTS that I have (only show cards from friend's wishlist that I have)
+  if(wishTxt){
+    var friendWants={};
+    (wishTxt.match(/[A-Za-z0-9]+/g)||[]).forEach(function(id){ friendWants[id.toUpperCase()]=true; });
+    var iHaveFriendNeeds=[];
+    for(var i=0;i<state.total;i++){
+      var cardId=state.cardIndex?String(state.cardIndex[i]):String(i+1);
+      var wantedByFriend=friendWants[cardId.toUpperCase()]||friendWants[String(i+1)];
+      if(cells[i] && wantedByFriend) iHaveFriendNeeds.push(cardId);
+    }
+    html+='<div class="stats-card"><div class="stats-title" style="color:var(--gold)">🎁 '+(lang==='el'?'Έχω που χρειάζεται ο φίλος':'I have what friend needs')+' ('+iHaveFriendNeeds.length+')</div>';
+    html+=(iHaveFriendNeeds.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+iHaveFriendNeeds.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
+  }
+
   html+='</div>';
   document.getElementById('compare-results').innerHTML=html;
 }
