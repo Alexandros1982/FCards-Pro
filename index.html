@@ -1232,10 +1232,12 @@ html{
 
     <!-- TAB: ΚΑΡΤΕΣ -->
     <div class="tcont on" id="tc-cards">
-      <div style="display:flex;gap:8px;margin-bottom:8px">
-        <button class="share-btn" style="flex:1;margin-bottom:0" onclick="goProStats()">📊 <span id="lbl-btn-stats-inline">Στατιστικά</span></button>
-        <button class="share-btn" style="flex:1;margin-bottom:0" onclick="goProHistory()">🕐 <span id="lbl-btn-history-inline">Ιστορικό</span></button>
-        <button class="share-btn" style="flex:1;margin-bottom:0" onclick="goProCompare()">🤝 <span id="lbl-btn-compare-inline">Σύγκριση</span></button>
+      <div class="search-bar">
+        <div class="search-wrap">
+          <span class="search-ico">🔍</span>
+          <input class="search-inp" type="text" id="searchInput" placeholder="Αναζήτηση κελιού..." oninput="doSearch(this.value)">
+          <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+        </div>
       </div>
       <div id="groupsContainer"></div>
     </div>
@@ -1247,7 +1249,7 @@ html{
         <button class="share-btn" style="margin-bottom:12px;flex:0 0 auto;width:auto;padding:11px 14px;border-color:rgba(230,57,70,.35);color:#e63946;background:rgba(230,57,70,.08)" onclick="resetDoubles()">🗑</button>
       </div>
       <div class="dbl-input-row">
-        <input type="text" id="dblInput" placeholder="Αριθμός κάρτας..." inputmode="text">
+        <input type="number" id="dblInput" placeholder="Αριθμός κάρτας..." min="1">
         <button class="btn-adddbl" onclick="addDouble()">＋</button>
       </div>
       <div class="dbl-stats">
@@ -1540,7 +1542,7 @@ var TR = {
     rename_ttl:'✏️ Μετονομασία ομάδας', rename_ph:'Νέο όνομα...', btn_cancel:'Ακύρωση', btn_save:'Αποθήκευση',
     set_display:'Εμφάνιση', fs_lbl:'Πλήρης οθόνη', fs_sub:'Απόκρυψη browser chrome',
     lang_lbl:'Γλώσσα', lang_sub:'Επιλογή γλώσσας εφαρμογής',
-    set_support:'Υποστήριξη', donate_btn:'Δωρεά μέσω Iris', donate_paypal:'Δωρεά μέσω PayPal', donate_sub:'Κάθε δωρεά βοηθά στην ανάπτυξη', pro_owner:'⭐ Κάτοχος PRO έκδοσης', btn_stats_inline:'Στατιστικά', btn_history_inline:'Ιστορικό', btn_compare_inline:'Σύγκριση',
+    set_support:'Υποστήριξη', donate_btn:'Δωρεά μέσω Iris', donate_paypal:'Δωρεά μέσω PayPal', donate_sub:'Κάθε δωρεά βοηθά στην ανάπτυξη', pro_owner:'⭐ Κάτοχος PRO έκδοσης',
     set_about:'Σχετικά', creator:'Δημιουργός: Αλέξανδρος Θεοχάρης',
     about_links:'Χρήσιμοι σύνδεσμοι',
     set_contact:'Επικοινωνία', contact_title:'Παρατηρήσεις & Διορθώσεις', contact_btn:'Email',
@@ -1583,7 +1585,7 @@ var TR = {
     rename_ttl:'✏️ Rename group', rename_ph:'New name...', btn_cancel:'Cancel', btn_save:'Save',
     set_display:'Display', fs_lbl:'Full screen', fs_sub:'Hide browser chrome',
     lang_lbl:'Language', lang_sub:'App language selection',
-    set_support:'Support', donate_btn:'Donate via Iris', donate_paypal:'Donate via PayPal', donate_sub:'Every donation helps development', pro_owner:'⭐ PRO Version Owner', btn_stats_inline:'Statistics', btn_history_inline:'History', btn_compare_inline:'Compare',
+    set_support:'Support', donate_btn:'Donate via Iris', donate_paypal:'Donate via PayPal', donate_sub:'Every donation helps development', pro_owner:'⭐ PRO Version Owner',
     set_about:'About', creator:'Created by: Alexandros Theocharis',
     about_links:'Useful links',
     set_contact:'Contact', contact_title:'Feedback & Bug Reports', contact_btn:'Email',
@@ -2453,26 +2455,10 @@ function updateBadge(){
 }
 
 function addDouble(){
-  var input=document.getElementById('dblInput');
-  var val=input.value.trim();
-  if(!val){ toast(T('warn_num')+state.total); return; }
-  // Support alphanumeric: check cardIndex first, fallback to numeric
-  var cardKey=val;
-  if(state.cardIndex){
-    var idx=state.cardIndex.findIndex(function(c){ return String(c).toUpperCase()===val.toUpperCase(); });
-    if(idx>=0) cardKey=String(state.cardIndex[idx]);
-    else {
-      var n=parseInt(val);
-      if(!isNaN(n) && n>=1 && n<=state.total) cardKey=String(n);
-      else { toast(T('warn_num')+state.total); return; }
-    }
-  } else {
-    var n=parseInt(val);
-    if(isNaN(n)||n<1||n>state.total){ toast(T('warn_num')+state.total); return; }
-    cardKey=String(n);
-  }
+  var input=document.getElementById('dblInput'), n=parseInt(input.value);
+  if(!n||n<1||n>state.total){ toast(T('warn_num')+state.total); return; }
   if(!state.doubles) state.doubles={};
-  state.doubles[cardKey]=(state.doubles[cardKey]||0)+1;
+  state.doubles[n]=(state.doubles[n]||0)+1;
   saveState(); renderDoubles(); updateBadge();
   input.value=''; input.focus();
 }
@@ -2485,11 +2471,7 @@ function chgQty(n,d){
 }
 
 function renderDoubles(){
-  var dbl=state.doubles||{}, keys=Object.keys(dbl).sort(function(a,b){
-    var na=parseFloat(a), nb=parseFloat(b);
-    if(!isNaN(na)&&!isNaN(nb)) return na-nb;
-    return String(a).localeCompare(String(b));
-  }), tot=0;
+  var dbl=state.doubles||{}, keys=Object.keys(dbl).map(Number).sort(function(a,b){return a-b;}),tot=0;
   keys.forEach(function(k){ tot+=dbl[k]; });
   document.getElementById('dblCount').textContent=keys.length;
   document.getElementById('dblTotal').textContent=tot;
@@ -2500,14 +2482,13 @@ function renderDoubles(){
   }
   keys.forEach(function(n){
     var qty=dbl[n], div=document.createElement('div'); div.className='dbl-item';
-    var ns=JSON.stringify(n);
     div.innerHTML='<div class="dbl-num-badge">'+n+'</div>'+
       '<div class="dbl-info"><div class="dbl-title">#'+n+'</div>'+
       '<div class="dbl-qty">×'+qty+' '+(qty===1?T('copy_s'):T('copy_p'))+' '+T('for_trade')+'</div></div>'+
       '<div class="dbl-actions">'+
-      '<button class="qty-btn" onclick="chgQty('+ns+',-1)">−</button>'+
-      '<button class="qty-btn" onclick="chgQty('+ns+',1)">＋</button>'+
-      '<button class="qty-btn qty-del" onclick="chgQty('+ns+',-999)">🗑</button></div>';
+      '<button class="qty-btn" onclick="chgQty('+n+',-1)">−</button>'+
+      '<button class="qty-btn" onclick="chgQty('+n+',1)">＋</button>'+
+      '<button class="qty-btn qty-del" onclick="chgQty('+n+',-999)">🗑</button></div>';
     list.appendChild(div);
   });
 }
@@ -2623,7 +2604,7 @@ function applyLang(){
   document.getElementById('lbl-share-wish').textContent=lang==='el'?'Κοινοποίηση wishlist':'Share wishlist';
   document.getElementById('lbl-wish-missing').textContent=lang==='el'?'Αναζητώ':'Looking for';
   document.getElementById('lbl-wish-done').textContent=lang==='el'?'Εντοπίστηκαν':'Found';
-  document.getElementById('searchInput') && document.getElementById('searchInput').placeholder=lang==='el'?'Αναζήτηση κελιού...':'Search cell...';
+  document.getElementById('searchInput').placeholder=lang==='el'?'Αναζήτηση κελιού...':'Search cell...';
   document.getElementById('wishInput').placeholder=lang==='el'?'Αριθμός κάρτας...':'Card number...';
   // Display section removed — lang toggle is in appbar
   var _lsd=document.getElementById('lbl-set-display'); if(_lsd) _lsd.textContent=T('set_display');
@@ -2631,9 +2612,6 @@ function applyLang(){
   var _lfe=document.getElementById('lbl-lang'); if(_lfe) _lfe.textContent=T('lang_lbl');
   document.getElementById('lbl-set-support').textContent=T('set_support');
   var _po=document.getElementById('lbl-pro-owner'); if(_po) _po.textContent=T('pro_owner');
-  var _si=document.getElementById('lbl-btn-stats-inline'); if(_si) _si.textContent=T('btn_stats_inline');
-  var _hi=document.getElementById('lbl-btn-history-inline'); if(_hi) _hi.textContent=T('btn_history_inline');
-  var _ci=document.getElementById('lbl-btn-compare-inline'); if(_ci) _ci.textContent=T('btn_compare_inline');
   document.getElementById('lbl-set-about').textContent=T('set_about');
   document.getElementById('lbl-creator').textContent=T('creator');
   var abl=document.getElementById('lbl-about-links');
@@ -2689,7 +2667,7 @@ document.getElementById('renameInput').addEventListener('keydown',function(e){ i
 document.getElementById('jumpInput').addEventListener('keydown',function(e){ if(e.key==='Enter') doJump(); });
 document.getElementById('dblInput').addEventListener('keydown',function(e){ if(e.key==='Enter') addDouble(); });
 document.getElementById('wishInput').addEventListener('keydown',function(e){ if(e.key==='Enter') addWish(); });
-var _si=document.getElementById('searchInput'); if(_si) _si.addEventListener('keydown',function(e){ if(e.key==='Escape') clearSearch(); });
+document.getElementById('searchInput').addEventListener('keydown',function(e){ if(e.key==='Escape') clearSearch(); });
 document.getElementById('renameOverlay').addEventListener('click',function(e){ if(e.target===this) closeOverlay(); });
 document.getElementById('exportOverlay').addEventListener('click',function(e){ if(e.target===this) closeExportOverlay(); });
 
@@ -3162,21 +3140,28 @@ function doCompare(){
     html+=(friendHasINeed.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+friendHasINeed.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
   }
 
-  // Field 2: Cards friend WANTS - search ONLY in doubles
+  // Field 2: Cards friend WANTS - check my collected cards AND my doubles
   if(wishTxt){
     var friendWants={};
     (wishTxt.match(/[A-Za-z0-9]+/g)||[]).forEach(function(id){ friendWants[id.toUpperCase()]=true; });
+    var iHaveFriendNeeds=[];
     var iHaveAsDouble=[];
     for(var i=0;i<state.total;i++){
       var cardId=state.cardIndex?String(state.cardIndex[i]):String(i+1);
       var wantedByFriend=friendWants[cardId.toUpperCase()]||friendWants[String(i+1)];
       if(wantedByFriend){
+        if(cells[i]) iHaveFriendNeeds.push(cardId);
+        // Also check doubles
         var dblCount=doubles[cardId]||doubles[String(i+1)]||0;
-        if(dblCount>0) iHaveAsDouble.push(cardId+' (x'+dblCount+')');
+        if(dblCount>0) iHaveAsDouble.push(cardId+' (x'+dblCount+' διπλή)');
       }
     }
-    html+='<div class="stats-card"><div class="stats-title" style="color:var(--gold)">🔄 '+(lang==='el'?'Έχω ως ΔΙΠΛΗ που χρειάζεται ο φίλος':'I have as DOUBLE what friend needs')+' ('+iHaveAsDouble.length+')</div>';
-    html+=(iHaveAsDouble.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+iHaveAsDouble.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία διπλή':'No doubles')+'</div>')+'</div>';
+    html+='<div class="stats-card"><div class="stats-title" style="color:var(--gold)">🎁 '+(lang==='el'?'Έχω που χρειάζεται ο φίλος':'I have what friend needs')+' ('+iHaveFriendNeeds.length+')</div>';
+    html+=(iHaveFriendNeeds.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+iHaveFriendNeeds.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
+    if(iHaveAsDouble.length>0){
+      html+='<div class="stats-card"><div class="stats-title" style="color:var(--red2)">🔄 '+(lang==='el'?'Έχω ως ΔΙΠΛΗ που χρειάζεται ο φίλος':'I have as DOUBLE what friend needs')+' ('+iHaveAsDouble.length+')</div>';
+      html+='<div style="font-size:12px;color:var(--text2);line-height:1.8">'+iHaveAsDouble.join(', ')+'</div></div>';
+    }
   }
 
   html+='</div>';
