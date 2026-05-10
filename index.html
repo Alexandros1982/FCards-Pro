@@ -3114,6 +3114,7 @@ function goProCompare(){
 }
 function clearCompare(){
   document.getElementById('comparePasteInput').value='';
+  document.getElementById('comparePasteWishInput').value='';
   document.getElementById('compare-results').innerHTML='';
 }
 function doCompare(){
@@ -3122,9 +3123,10 @@ function doCompare(){
   if(!txt && !wishTxt){ toast(lang==='el'?'⚠️ Επικόλλησε τουλάχιστον ένα πεδίο':'⚠️ Paste at least one field'); return; }
 
   var cells=state.cells||[];
+  var doubles=state.doubles||{};
   var html='<div style="padding:12px;display:flex;flex-direction:column;gap:12px">';
 
-  // Field 1: Cards friend HAS that I need (only show cards from friend's list that I'm missing)
+  // Field 1: Cards friend HAS that I need
   if(txt){
     var friendHas={};
     (txt.match(/[A-Za-z0-9]+/g)||[]).forEach(function(id){ friendHas[id.toUpperCase()]=true; });
@@ -3138,18 +3140,28 @@ function doCompare(){
     html+=(friendHasINeed.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+friendHasINeed.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
   }
 
-  // Field 2: Cards friend WANTS that I have (only show cards from friend's wishlist that I have)
+  // Field 2: Cards friend WANTS - check my collected cards AND my doubles
   if(wishTxt){
     var friendWants={};
     (wishTxt.match(/[A-Za-z0-9]+/g)||[]).forEach(function(id){ friendWants[id.toUpperCase()]=true; });
     var iHaveFriendNeeds=[];
+    var iHaveAsDouble=[];
     for(var i=0;i<state.total;i++){
       var cardId=state.cardIndex?String(state.cardIndex[i]):String(i+1);
       var wantedByFriend=friendWants[cardId.toUpperCase()]||friendWants[String(i+1)];
-      if(cells[i] && wantedByFriend) iHaveFriendNeeds.push(cardId);
+      if(wantedByFriend){
+        if(cells[i]) iHaveFriendNeeds.push(cardId);
+        // Also check doubles
+        var dblCount=doubles[cardId]||doubles[String(i+1)]||0;
+        if(dblCount>0) iHaveAsDouble.push(cardId+' (x'+dblCount+' διπλή)');
+      }
     }
     html+='<div class="stats-card"><div class="stats-title" style="color:var(--gold)">🎁 '+(lang==='el'?'Έχω που χρειάζεται ο φίλος':'I have what friend needs')+' ('+iHaveFriendNeeds.length+')</div>';
     html+=(iHaveFriendNeeds.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+iHaveFriendNeeds.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
+    if(iHaveAsDouble.length>0){
+      html+='<div class="stats-card"><div class="stats-title" style="color:var(--red2)">🔄 '+(lang==='el'?'Έχω ως ΔΙΠΛΗ που χρειάζεται ο φίλος':'I have as DOUBLE what friend needs')+' ('+iHaveAsDouble.length+')</div>';
+      html+='<div style="font-size:12px;color:var(--text2);line-height:1.8">'+iHaveAsDouble.join(', ')+'</div></div>';
+    }
   }
 
   html+='</div>';
