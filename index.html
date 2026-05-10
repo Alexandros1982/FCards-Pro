@@ -1239,6 +1239,10 @@ html{
           <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
         </div>
       </div>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <button class="share-btn" style="flex:1;margin-bottom:0" onclick="goProStats()">📊 <span id="lbl-btn-stats-inline">Στατιστικά</span></button>
+        <button class="share-btn" style="flex:1;margin-bottom:0" onclick="goProHistory()">🕐 <span id="lbl-btn-history-inline">Ιστορικό</span></button>
+      </div>
       <div id="groupsContainer"></div>
     </div>
 
@@ -1542,7 +1546,7 @@ var TR = {
     rename_ttl:'✏️ Μετονομασία ομάδας', rename_ph:'Νέο όνομα...', btn_cancel:'Ακύρωση', btn_save:'Αποθήκευση',
     set_display:'Εμφάνιση', fs_lbl:'Πλήρης οθόνη', fs_sub:'Απόκρυψη browser chrome',
     lang_lbl:'Γλώσσα', lang_sub:'Επιλογή γλώσσας εφαρμογής',
-    set_support:'Υποστήριξη', donate_btn:'Δωρεά μέσω Iris', donate_paypal:'Δωρεά μέσω PayPal', donate_sub:'Κάθε δωρεά βοηθά στην ανάπτυξη', pro_owner:'⭐ Κάτοχος PRO έκδοσης',
+    set_support:'Υποστήριξη', donate_btn:'Δωρεά μέσω Iris', donate_paypal:'Δωρεά μέσω PayPal', donate_sub:'Κάθε δωρεά βοηθά στην ανάπτυξη', pro_owner:'⭐ Κάτοχος PRO έκδοσης', btn_stats_inline:'Στατιστικά', btn_history_inline:'Ιστορικό',
     set_about:'Σχετικά', creator:'Δημιουργός: Αλέξανδρος Θεοχάρης',
     about_links:'Χρήσιμοι σύνδεσμοι',
     set_contact:'Επικοινωνία', contact_title:'Παρατηρήσεις & Διορθώσεις', contact_btn:'Email',
@@ -1585,7 +1589,7 @@ var TR = {
     rename_ttl:'✏️ Rename group', rename_ph:'New name...', btn_cancel:'Cancel', btn_save:'Save',
     set_display:'Display', fs_lbl:'Full screen', fs_sub:'Hide browser chrome',
     lang_lbl:'Language', lang_sub:'App language selection',
-    set_support:'Support', donate_btn:'Donate via Iris', donate_paypal:'Donate via PayPal', donate_sub:'Every donation helps development', pro_owner:'⭐ PRO Version Owner',
+    set_support:'Support', donate_btn:'Donate via Iris', donate_paypal:'Donate via PayPal', donate_sub:'Every donation helps development', pro_owner:'⭐ PRO Version Owner', btn_stats_inline:'Statistics', btn_history_inline:'History',
     set_about:'About', creator:'Created by: Alexandros Theocharis',
     about_links:'Useful links',
     set_contact:'Contact', contact_title:'Feedback & Bug Reports', contact_btn:'Email',
@@ -2612,6 +2616,8 @@ function applyLang(){
   var _lfe=document.getElementById('lbl-lang'); if(_lfe) _lfe.textContent=T('lang_lbl');
   document.getElementById('lbl-set-support').textContent=T('set_support');
   var _po=document.getElementById('lbl-pro-owner'); if(_po) _po.textContent=T('pro_owner');
+  var _si=document.getElementById('lbl-btn-stats-inline'); if(_si) _si.textContent=T('btn_stats_inline');
+  var _hi=document.getElementById('lbl-btn-history-inline'); if(_hi) _hi.textContent=T('btn_history_inline');
   document.getElementById('lbl-set-about').textContent=T('set_about');
   document.getElementById('lbl-creator').textContent=T('creator');
   var abl=document.getElementById('lbl-about-links');
@@ -3140,28 +3146,21 @@ function doCompare(){
     html+=(friendHasINeed.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+friendHasINeed.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
   }
 
-  // Field 2: Cards friend WANTS - check my collected cards AND my doubles
+  // Field 2: Cards friend WANTS - search ONLY in doubles
   if(wishTxt){
     var friendWants={};
     (wishTxt.match(/[A-Za-z0-9]+/g)||[]).forEach(function(id){ friendWants[id.toUpperCase()]=true; });
-    var iHaveFriendNeeds=[];
     var iHaveAsDouble=[];
     for(var i=0;i<state.total;i++){
       var cardId=state.cardIndex?String(state.cardIndex[i]):String(i+1);
       var wantedByFriend=friendWants[cardId.toUpperCase()]||friendWants[String(i+1)];
       if(wantedByFriend){
-        if(cells[i]) iHaveFriendNeeds.push(cardId);
-        // Also check doubles
         var dblCount=doubles[cardId]||doubles[String(i+1)]||0;
-        if(dblCount>0) iHaveAsDouble.push(cardId+' (x'+dblCount+' διπλή)');
+        if(dblCount>0) iHaveAsDouble.push(cardId+' (x'+dblCount+')');
       }
     }
-    html+='<div class="stats-card"><div class="stats-title" style="color:var(--gold)">🎁 '+(lang==='el'?'Έχω που χρειάζεται ο φίλος':'I have what friend needs')+' ('+iHaveFriendNeeds.length+')</div>';
-    html+=(iHaveFriendNeeds.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+iHaveFriendNeeds.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία':'None')+'</div>')+'</div>';
-    if(iHaveAsDouble.length>0){
-      html+='<div class="stats-card"><div class="stats-title" style="color:var(--red2)">🔄 '+(lang==='el'?'Έχω ως ΔΙΠΛΗ που χρειάζεται ο φίλος':'I have as DOUBLE what friend needs')+' ('+iHaveAsDouble.length+')</div>';
-      html+='<div style="font-size:12px;color:var(--text2);line-height:1.8">'+iHaveAsDouble.join(', ')+'</div></div>';
-    }
+    html+='<div class="stats-card"><div class="stats-title" style="color:var(--gold)">🔄 '+(lang==='el'?'Έχω ως ΔΙΠΛΗ που χρειάζεται ο φίλος':'I have as DOUBLE what friend needs')+' ('+iHaveAsDouble.length+')</div>';
+    html+=(iHaveAsDouble.length>0?'<div style="font-size:12px;color:var(--text2);line-height:1.8">'+iHaveAsDouble.join(', ')+'</div>':'<div style="font-size:12px;color:var(--text3)">'+(lang==='el'?'Καμία διπλή':'No doubles')+'</div>')+'</div>';
   }
 
   html+='</div>';
