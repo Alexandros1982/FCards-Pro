@@ -2477,8 +2477,10 @@ function addDouble(){
   input.value=''; input.focus();
 }
 
-function chgQty(n,d){
+function chgQty(btn){
   if(!state.doubles) state.doubles={};
+  var n=btn.dataset.key;
+  var d=parseInt(btn.dataset.d);
   var nv=(state.doubles[n]||0)+d;
   if(nv<=0) delete state.doubles[n]; else state.doubles[n]=nv;
   saveState(); renderDoubles(); updateBadge();
@@ -2500,14 +2502,18 @@ function renderDoubles(){
   }
   keys.forEach(function(n){
     var qty=dbl[n], div=document.createElement('div'); div.className='dbl-item';
-    var ns=JSON.stringify(String(n));
     div.innerHTML='<div class="dbl-num-badge">'+n+'</div>'+
       '<div class="dbl-info"><div class="dbl-title">#'+n+'</div>'+
       '<div class="dbl-qty">×'+qty+' '+(qty===1?T('copy_s'):T('copy_p'))+' '+T('for_trade')+'</div></div>'+
       '<div class="dbl-actions">'+
-      '<button class="qty-btn" onclick="chgQty('+ns+',-1)">−</button>'+
-      '<button class="qty-btn" onclick="chgQty('+ns+',1)">＋</button>'+
-      '<button class="qty-btn qty-del" onclick="chgQty('+ns+',-999)">🗑</button></div>';
+      '<button class="qty-btn" onclick="chgQty(this)">−</button>'+
+      '<button class="qty-btn" onclick="chgQty(this)">＋</button>'+
+      '<button class="qty-btn qty-del" onclick="chgQty(this)">🗑</button></div>';
+    // Store key as data attribute to avoid escaping issues
+    var btns=div.querySelectorAll('.qty-btn');
+    btns[0].dataset.key=n; btns[0].dataset.d='-1';
+    btns[1].dataset.key=n; btns[1].dataset.d='1';
+    btns[2].dataset.key=n; btns[2].dataset.d='-999';
     list.appendChild(div);
   });
 }
