@@ -2479,19 +2479,8 @@ function addDouble(){
 
 function chgQty(n,d){
   if(!state.doubles) state.doubles={};
-  // Support both numeric and string keys
-  var key=n;
-  if(typeof n==='number') key=n;
-  else key=isNaN(Number(n))?n:Number(n);
-  // Try string key first, then numeric
-  var cur=state.doubles[key];
-  if(cur===undefined) cur=state.doubles[String(key)]||state.doubles[Number(key)]||0;
-  var nv=cur+d;
-  // Clean up any duplicate keys
-  delete state.doubles[key];
-  delete state.doubles[String(key)];
-  delete state.doubles[Number(key)];
-  if(nv>0) state.doubles[key]=nv;
+  var nv=(state.doubles[n]||0)+d;
+  if(nv<=0) delete state.doubles[n]; else state.doubles[n]=nv;
   saveState(); renderDoubles(); updateBadge();
 }
 
@@ -2511,7 +2500,7 @@ function renderDoubles(){
   }
   keys.forEach(function(n){
     var qty=dbl[n], div=document.createElement('div'); div.className='dbl-item';
-    var ns=JSON.stringify(n);
+    var ns=JSON.stringify(String(n));
     div.innerHTML='<div class="dbl-num-badge">'+n+'</div>'+
       '<div class="dbl-info"><div class="dbl-title">#'+n+'</div>'+
       '<div class="dbl-qty">×'+qty+' '+(qty===1?T('copy_s'):T('copy_p'))+' '+T('for_trade')+'</div></div>'+
